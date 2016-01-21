@@ -20,10 +20,10 @@
 
 from kafka.client import KafkaClient
 from kafka.producer import SimpleProducer
+
 from mongo_connector.doc_managers.doc_manager_base import DocManagerBase
 from mongo_connector import constants
-from mongo_connector.errors import OperationFailed
-from mongo_connector.compat import u
+
 
 class DocManager(DocManagerBase):
     """ Connects to a kafka instance, generates producers for a given
@@ -64,25 +64,28 @@ class DocManager(DocManagerBase):
         self.auto_commit = False
         self.server.close()
 
+    def update(self, document_id, update_spec, namespace, timestamp):
+        """Apply updates given in update_spec to the document whose id
+        matches that of doc.
+        """
+        pass
+
+    def remove(self, document_id, namespace, timestamp):
+        pass
+
     def upsert(self, doc, namespace, timestamp):
         print "upsert"
         """ Sends the document to kafka
         """
         if doc.has_key('isInTangoDir'):
-          print doc
-          database, coll = namespace.split('.', 1)
-          topic = (('%s-%s') % (database, coll))
-          producer = self.generate_producer(namespace)
-          if producer:
-              producer.send_messages(topic, str(doc))
-          else:
-              raise SystemError
-
-    def remove(self, doc):
-        print "remove"
-        """ Not revelant in this context
-        """
-        pass
+            print doc
+            database, coll = namespace.split('.', 1)
+            topic = (('%s-%s') % (database, coll))
+            producer = self.generate_producer(namespace)
+            if producer:
+                producer.send_messages(topic, str(doc))
+            else:
+                raise SystemError
 
     def search(self, start_ts, end_ts):
         print "search"

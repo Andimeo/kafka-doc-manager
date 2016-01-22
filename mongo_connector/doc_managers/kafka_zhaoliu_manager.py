@@ -78,12 +78,14 @@ class DocManager(DocManagerBase):
         """ Sends the document to kafka
         """
         if doc.has_key('isInTangoDir'):
-            print doc
+            import json
+            doc_str = json.dumps(doc)
+            print doc_str
             database, coll = namespace.split('.', 1)
             topic = (('%s-%s') % (database, coll))
             producer = self.generate_producer(namespace)
             if producer:
-                producer.send_messages(topic, str(doc))
+                producer.send_messages(topic, str(doc_str))
             else:
                 raise SystemError
 

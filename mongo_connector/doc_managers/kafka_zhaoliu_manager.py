@@ -79,6 +79,8 @@ class DocManager(DocManagerBase):
         """
         if doc.has_key('isInTangoDir'):
             import json
+            # remove field "_id" since ObjectId("") can't be serialized
+            del doc['_id']
             doc_str = json.dumps(doc)
             print doc_str
             database, coll = namespace.split('.', 1)
